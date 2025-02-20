@@ -1,0 +1,50 @@
+[tool.poetry]
+name = "taskcollabapi"
+version = "0.1.0"
+description = ""
+authors = ["yudur <duarteyudi218@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+uvicorn = {extras = ["standard"], version = "^0.34.0"}
+fastapi = "^0.115.8"
+prisma = "^0.15.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.4"
+ruff = "^0.9.6"
+taskipy = "^1.14.1"
+pre-commit = "^4.1.0"
+
+[tool.taskipy.tasks]
+run = 'uvicorn taskcollabapi.app:app --host 0.0.0.0 --port 8000 --reload'
+
+pre_test = 'task lint'
+test = 'pytest'
+
+lint = 'ruff check . && ruff check . --diff'
+
+pre_format = 'ruff check . --fix'
+format = 'ruff format .'
+
+[tool.pytest.ini_options]
+pythonpath = "."
+addopts = '-p no:warnings'
+
+[tool.ruff]
+line-length = 90
+extend-exclude = ['migrations']
+
+[tool.ruff.lint]
+preview = true
+select = ['I', 'F', 'E', 'W', 'PL', 'PT']
+
+[tool.ruff.format]
+preview = true
+quote-style = 'single'
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
