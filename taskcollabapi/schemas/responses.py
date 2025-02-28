@@ -25,4 +25,4 @@ class BaseResponseSchema(BaseModel):
 
 
 class ErrorResponseSchema(BaseResponseSchema):
-    data: Optional[Dict | List | None] = None
+    data: Optional[Dict | List] = None

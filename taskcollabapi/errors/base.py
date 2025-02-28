@@ -11,7 +11,7 @@ class BaseError(Exception):
         status: int,
         message: str,
         code: str,
-        data: Optional[List | Dict | None] = None,
+        data: Optional[List | Dict] = None,
     ):
         self.status = status
         self.message = message
