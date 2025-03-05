@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, TypedDict
 
 from pydantic import BaseModel, ConfigDict
 
@@ -22,6 +22,12 @@ class BaseResponseSchema(BaseModel):
     message: str
 
     model_config = ConfigDict(extra='allow')
+
+
+class BaseResponseDict(TypedDict):
+    status: int
+    code: str
+    message: str
 
 
 class ErrorResponseSchema(BaseResponseSchema):

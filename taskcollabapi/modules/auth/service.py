@@ -7,8 +7,8 @@ from taskcollabapi.modules.auth.errors import (
     UserAlreadyExistsError,
 )
 from taskcollabapi.modules.auth.schema import (
-    CreateTokenResposeSchema,
-    RegisterUserResponseSchema,
+    CreateTokenResposeDict,
+    RegisterUserResponseDict,
     SignInSchema,
     TokenData,
     TokenDataType,
@@ -17,7 +17,7 @@ from taskcollabapi.modules.users import repository as user_repo
 from taskcollabapi.modules.users.schema import UserCreateSchema
 
 
-async def sign_up(data: UserCreateSchema) -> RegisterUserResponseSchema:
+async def sign_up(data: UserCreateSchema) -> RegisterUserResponseDict:
     user_exists = await user_repo.get_user_by_email(data.email)
     if user_exists:
         raise UserAlreadyExistsError()
@@ -26,12 +26,15 @@ async def sign_up(data: UserCreateSchema) -> RegisterUserResponseSchema:
 
     user = await user_repo.create(data)
 
-    return RegisterUserResponseSchema(
-        status=201, code='USER_CREATED', message='User created successfully', data=user
-    )
+    return {
+        'status': 201,
+        'code': 'USER_CREATED',
+        'message': 'User created successfully',
+        'data': user,
+    }
 
 
-async def sign_in(data: SignInSchema, response: Response) -> CreateTokenResposeSchema:
+async def sign_in(data: SignInSchema, response: Response) -> CreateTokenResposeDict:
     user = await user_repo.get_user_by_email(data.email)
     if not user:
         raise InvalidCredentialsError()
@@ -47,12 +50,12 @@ async def sign_in(data: SignInSchema, response: Response) -> CreateTokenResposeS
         key='refresh_token', value=refresh_token, httponly=True, secure=True
     )
 
-    return CreateTokenResposeSchema(
-        status=200,
-        code='TOKEN_CREATED',
-        message='user authenticated and logged in successfully',
-        data=TokenData(access_token=access_token, token_type='Bearer'),
-    )
+    return {
+        'status': 200,
+        'code': 'TOKEN_CREATED',
+        'message': 'user authenticated and logged in successfully',
+        'data': TokenData(access_token=access_token, token_type='Bearer'),
+    }
 
 
 async def sign_out(
@@ -67,15 +70,15 @@ async def sign_out(
     response.delete_cookie('refresh_token')
 
 
-async def refresh_token(refresh_token: TokenDataType) -> CreateTokenResposeSchema:
+async def refresh_token(refresh_token: TokenDataType) -> CreateTokenResposeDict:
     payload = refresh_token[1]
 
     # Create a new access token
     new_access_token = security.create_access_token(payload.sub)
 
-    return CreateTokenResposeSchema(
-        status=200,
-        code='TOKEN_CREATED',
-        message='the token has been recreated',
-        data=TokenData(access_token=new_access_token, token_type='bearer'),
-    )
+    return {
+        'status': 200,
+        'code': 'TOKEN_CREATED',
+        'message': 'the token has been recreated',
+        'data': TokenData(access_token=new_access_token, token_type='Bearer'),
+    }

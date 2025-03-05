@@ -13,7 +13,5 @@ async def add_token_to_blocklist(jti: str, access_token: bool) -> None:
 
 async def token_in_blocklist(jti: str) -> bool:
     _jti = await redis_blocklist.get(jti)
-    print(jti)
-    print(redis_blocklist)
 
     return _jti is not None

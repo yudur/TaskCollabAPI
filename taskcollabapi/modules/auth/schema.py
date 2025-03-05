@@ -4,12 +4,16 @@ from pydantic import BaseModel, EmailStr
 
 from taskcollabapi.core import security
 from taskcollabapi.core.db.db import User
-from taskcollabapi.schemas.responses import BaseResponseSchema
+from taskcollabapi.schemas.responses import BaseResponseDict, BaseResponseSchema
 
 TokenDataType = Tuple[str, security.TokenPayloadSchema]
 
 
 class RegisterUserResponseSchema(BaseResponseSchema):
+    data: User
+
+
+class RegisterUserResponseDict(BaseResponseDict):
     data: User
 
 
@@ -24,4 +28,8 @@ class TokenData(BaseModel):
 
 
 class CreateTokenResposeSchema(BaseResponseSchema):
+    data: TokenData
+
+
+class CreateTokenResposeDict(BaseResponseDict):
     data: TokenData
